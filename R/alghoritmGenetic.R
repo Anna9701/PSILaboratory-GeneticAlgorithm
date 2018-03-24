@@ -11,7 +11,7 @@ randStartupPopulationSize <- function() {
 
 createStartupPopulation <- function(populationSize, nBits) {
   populationMatrix <- matrix(nrow = 0, ncol = nBits)
-  for (index in 0:populationSize) {
+  for (index in 1:populationSize) {
     number <- round(runif(1) * 126) + 1
     binaryNumber <- decimal2binary(number, 8)
     populationMatrix <- rbind(populationMatrix, binaryNumber, deparse.level = 0)
@@ -19,10 +19,19 @@ createStartupPopulation <- function(populationSize, nBits) {
   return(populationMatrix)
 }
 
+fitnessEvaluation <- function(chromosomsMatrix) {
+  fitnessRates <- matrix(nrow = 0, ncol = 1)
+  for (index in 1:nrow(chromosomsMatrix)) {
+    number <- binary2decimal(chromosomsMatrix[index,])
+    fitnessRates <- rbind(fitnessRates, fitnessFunction(number), deparse.level = 0)
+  }
+  return (fitnessRates)
+}
 
+nBits <- 8
 startupPopulationSize <- randStartupPopulationSize()
 print(startupPopulationSize)
-nBits <- 8
-chromosomsMatrix <- createStartupPopulation(startupPopulationSize, nBits)
-print(chromosomsMatrix)
-
+chromosomsMatrix1 <- createStartupPopulation(startupPopulationSize, nBits)
+print(chromosomsMatrix1)
+fintessRatesMatrix1 <- fitnessEvaluation(chromosomsMatrix1)
+print(fintessRatesMatrix1)

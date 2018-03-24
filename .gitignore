@@ -2,3 +2,7 @@
 .Rhistory
 .RData
 .Ruserdata
+.Rbuildingore
+.Rproj
+man
+DESCRIPTION
