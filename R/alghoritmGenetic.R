@@ -8,18 +8,15 @@ nBits <- 8
 minNumber <- 1
 maxNumber <- 127
 maxPopulation <- 10
+PK <- 0.75
+PM <- 1
 
 startupPopulationSize <- randStartupPopulationSize()
-#print(startupPopulationSize)
-
 chromosomsMatrix1 <- createStartupPopulation(startupPopulationSize, nBits)
-#print(chromosomsMatrix1)
-
 fintessRatesMatrix1 <- fitnessEvaluation(chromosomsMatrix1)
-#print(fintessRatesMatrix1)
-
 nextGenerationParents <- findNextGenerationParentsByChromosomsSelection(chromosomsMatrix1, fintessRatesMatrix1)
-print(nextGenerationParents)
-
-nextGeneration <- crossoverPopulation(nextGenerationParents)
-print(nextGeneration)
+nextGeneration <- crossoverPopulation(nextGenerationParents, nBits, PK)
+nextGeneration <- processMutationInPopulation(nextGeneration, nBits, PM)
+fintessRatesMatrix2 <- fitnessEvaluation(nextGeneration)
+print(fintessRatesMatrix1)
+print(fintessRatesMatrix2)

@@ -57,25 +57,36 @@ findNextGenerationParentsByChromosomsSelection <- function(chromosomsMatrix, fit
   return(nextGenerationParents)
 }
 
-crossoverPopulation <- function(nextGenerationParents) {
+crossoverPopulation <- function(nextGenerationParents, nBits, crossoverProbability) {
   nextGeneration <- nextGenerationParents[sample(1:startupPopulationSize),]
   numberOfPairs <- nrow(nextGeneration) / 2
   index <- 1
   for (iterator in 1:numberOfPairs) {
-    pair1 <- nextGeneration[index,]
-    pair2 <- nextGeneration[index+1,]
-    locus <- round(runif(1, min = 1, max = 8))
-    print(locus)
-    temp1 <- c(8)
-    temp2 <- c(8)
-    temp1[1:locus] <- pair1[1:locus]
-    temp2[1:locus] <- pair2[1:locus]
-    temp1[(locus+1):8] <- pair2[(locus+1):8]
-    temp2[(locus+1):8] <- pair1[(locus+1):8]
-    nextGeneration[index + 1,] <- temp2
-    nextGeneration[index,] <- temp1
+    if (runif(1) <= crossoverProbability) {
+      pair1 <- nextGeneration[index,]
+      pair2 <- nextGeneration[index+1,]
+      locus <- round(runif(1, min = 0, max = nBits - 1))
+      temp1 <- c(nBits)
+      temp2 <- c(nBits)
+      temp1[1:locus] <- pair1[1:locus]
+      temp2[1:locus] <- pair2[1:locus]
+      temp1[(locus+1):nBits] <- pair2[(locus+1):nBits]
+      temp2[(locus+1):nBits] <- pair1[(locus+1):nBits]
+      nextGeneration[(index + 1),] <- temp2
+      nextGeneration[index,] <- temp1
+    }
     index <- index + 2
   }
+
   return(nextGeneration)
 }
 
+processMutationInPopulation <- function(nextGeneration, nBits, mutationProbability) {
+  if (!(runif(1) <= mutationProbability)) {
+    return (nextGeneration)
+  }
+  chromosomToMutate <- round(runif(1, min = 1, max = nrow(nextGeneration)))
+  locus <- round(runif(1, min = 1, max = nBits))
+  nextGeneration[chromosomToMutate, locus] <- !nextGeneration[chromosomToMutate, locus]
+  return (nextGeneration)
+}
