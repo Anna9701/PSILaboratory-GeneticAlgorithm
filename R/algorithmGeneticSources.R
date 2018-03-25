@@ -1,6 +1,6 @@
 library(GA)
 
-randStartupPopulationSize <- function() {
+randStartupPopulationSize <- function(maxPopulation) {
   numbersToRand <- 1
   population <- round(runif(numbersToRand, min = 1, max = maxPopulation))
   if (population %% 2 == 1) {
@@ -9,11 +9,11 @@ randStartupPopulationSize <- function() {
   return (population)
 }
 
-createStartupPopulation <- function(populationSize, nBits) {
+createStartupPopulation <- function(populationSize, nBits, minValue, maxValue) {
   numbersToRand <- 1
   populationMatrix <- matrix(nrow = 0, ncol = nBits)
   for (index in 1:populationSize) {
-    number <- round(runif(numbersToRand, min = minNumber, max = maxNumber))
+    number <- round(runif(numbersToRand, min = minValue, max = maxValue))
     binaryNumber <- decimal2binary(number, nBits)
     populationMatrix <- rbind(populationMatrix, binaryNumber, deparse.level = 0)
   }
@@ -58,7 +58,7 @@ findNextGenerationParentsByChromosomsSelection <- function(chromosomsMatrix, fit
 }
 
 crossoverPopulation <- function(nextGenerationParents, nBits, crossoverProbability) {
-  nextGeneration <- nextGenerationParents[sample(1:startupPopulationSize),]
+  nextGeneration <- nextGenerationParents[sample(1:nrow(nextGenerationParents)),]
   numberOfPairs <- nrow(nextGeneration) / 2
   index <- 1
   for (iterator in 1:numberOfPairs) {
@@ -90,3 +90,26 @@ processMutationInPopulation <- function(nextGeneration, nBits, mutationProbabili
   nextGeneration[chromosomToMutate, locus] <- !nextGeneration[chromosomToMutate, locus]
   return (nextGeneration)
 }
+
+findTheBestChromosom <- function(chromosomsMatrix, fitnessRates) {
+  index <- which.max(fitnessRates)
+  return (chromosomsMatrix[index,])
+}
+
+basicGeneticAlgorithm <- function (nBits, minNumber, maxNumber, maxPopulation, PK, PM, numberOfGenerations) {
+  generation <- 1
+  populationSize <- randStartupPopulationSize(maxPopulation)
+  chromosomsMatrix <- createStartupPopulation(populationSize, nBits, minNumber, maxNumber)
+  fintessRatesMatrix <- fitnessEvaluation(chromosomsMatrix)
+  while (generation < numberOfGenerations) {
+    nextGenerationParents <- findNextGenerationParentsByChromosomsSelection(chromosomsMatrix, fintessRatesMatrix)
+    nextGeneration <- crossoverPopulation(nextGenerationParents, nBits, PK)
+    chromosomsMatrix <- processMutationInPopulation(nextGeneration, nBits, PM)
+    fintessRatesMatrix <- fitnessEvaluation(chromosomsMatrix)
+    generation <- generation + 1
+  }
+
+  bestChromosom <- findTheBestChromosom(chromosomsMatrix = chromosomsMatrix, fitnessRates = fintessRatesMatrix)
+  return(bestChromosom)
+}
+

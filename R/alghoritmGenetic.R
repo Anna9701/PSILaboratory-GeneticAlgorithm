@@ -7,16 +7,11 @@ fitnessFunction <- function(x) 2*(x^2+1)
 nBits <- 8
 minNumber <- 1
 maxNumber <- 127
-maxPopulation <- 10
+maxPopulation <- 100
 PK <- 0.75
-PM <- 1
+PM <- 0.10
+numberOfGenerations <- 10
 
-startupPopulationSize <- randStartupPopulationSize()
-chromosomsMatrix1 <- createStartupPopulation(startupPopulationSize, nBits)
-fintessRatesMatrix1 <- fitnessEvaluation(chromosomsMatrix1)
-nextGenerationParents <- findNextGenerationParentsByChromosomsSelection(chromosomsMatrix1, fintessRatesMatrix1)
-nextGeneration <- crossoverPopulation(nextGenerationParents, nBits, PK)
-nextGeneration <- processMutationInPopulation(nextGeneration, nBits, PM)
-fintessRatesMatrix2 <- fitnessEvaluation(nextGeneration)
-print(fintessRatesMatrix1)
-print(fintessRatesMatrix2)
+result <- basicGeneticAlgorithm(nBits, minNumber, maxNumber, maxPopulation, PK, PM, numberOfGenerations)
+print(result)
+print(binary2decimal(result))
