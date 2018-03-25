@@ -2,7 +2,8 @@
 .Rhistory
 .RData
 .Ruserdata
-.Rbuildingore
-.Rproj
+.Rbuildignore
+*.Rproj
 man
+NAMESPACE
 DESCRIPTION
