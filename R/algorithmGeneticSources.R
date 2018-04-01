@@ -101,15 +101,37 @@ basicGeneticAlgorithm <- function (nBits, minNumber, maxNumber, maxPopulation, P
   populationSize <- randStartupPopulationSize(maxPopulation)
   chromosomsMatrix <- createStartupPopulation(populationSize, nBits, minNumber, maxNumber)
   fintessRatesMatrix <- fitnessEvaluation(chromosomsMatrix)
+  maxValue <- binary2decimal(findTheBestChromosom(chromosomsMatrix = chromosomsMatrix, fitnessRates = fintessRatesMatrix))
+  generationAfterWhichBestValue <- generation
   while (generation < numberOfGenerations) {
     nextGenerationParents <- findNextGenerationParentsByChromosomsSelection(chromosomsMatrix, fintessRatesMatrix)
     nextGeneration <- crossoverPopulation(nextGenerationParents, nBits, PK)
     chromosomsMatrix <- processMutationInPopulation(nextGeneration, nBits, PM)
     fintessRatesMatrix <- fitnessEvaluation(chromosomsMatrix)
+    bestChromosom <- findTheBestChromosom(chromosomsMatrix = chromosomsMatrix, fitnessRates = fintessRatesMatrix)
+    if (binary2decimal(bestChromosom) > maxValue) {
+      maxValue <- binary2decimal(bestChromosom)
+      generationAfterWhichBestValue <- generation
+    }
     generation <- generation + 1
   }
-
-  bestChromosom <- findTheBestChromosom(chromosomsMatrix = chromosomsMatrix, fitnessRates = fintessRatesMatrix)
-  return(bestChromosom)
+  return (generationAfterWhichBestValue)
 }
+
+# basicGeneticAlgorithm <- function (nBits, minNumber, maxNumber, maxPopulation, PK, PM, numberOfGenerations) {
+#   generation <- 1
+#   populationSize <- randStartupPopulationSize(maxPopulation)
+#   chromosomsMatrix <- createStartupPopulation(populationSize, nBits, minNumber, maxNumber)
+#   fintessRatesMatrix <- fitnessEvaluation(chromosomsMatrix)
+#   while (generation < numberOfGenerations) {
+#     nextGenerationParents <- findNextGenerationParentsByChromosomsSelection(chromosomsMatrix, fintessRatesMatrix)
+#     nextGeneration <- crossoverPopulation(nextGenerationParents, nBits, PK)
+#     chromosomsMatrix <- processMutationInPopulation(nextGeneration, nBits, PM)
+#     fintessRatesMatrix <- fitnessEvaluation(chromosomsMatrix)
+#     generation <- generation + 1
+#   }
+#
+#   bestChromosom <- findTheBestChromosom(chromosomsMatrix = chromosomsMatrix, fitnessRates = fintessRatesMatrix)
+#   return(bestChromosom)
+# }
 
